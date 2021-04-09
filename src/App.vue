@@ -24,7 +24,7 @@
     <br>
     <span>单选框:</span><br>
     <input type="radio" value="man" v-model="picked"/>man
-    <input type="radio" value="femanl" v-model="picked"/>femanl
+    <input type="radio" value="female" v-model="picked"/>female
     <br>
     <span>picked : {{ picked }}</span>
     <br>
@@ -48,13 +48,25 @@
     <br>
     <span>selected : {{ selected1 }}</span>
     <br>
+    <alert-box></alert-box>
+    <alert-box>something error msg</alert-box>
     <br>
-    <alert-box>
-      something error msg
-    </alert-box>
+    <todo-list>
+      <template v-slot:todo-list="slotProps">
+        <span style="font-size: 1.5em">{{ slotProps.item }}</span>
+      </template>
+    </todo-list>
     <br>
-    <label>my-component v-model:foo="bar" </label>
-<!--    <my-component v-model:foo="bar"></my-component>-->
+    <!--缩写-->
+    <todo-list #todo-list="slotProps">
+      <span style="font-size: 1.5em">{{ slotProps.item }}</span>
+    </todo-list>
+    <br>
+    <!--    bus总线通信    -->
+    <child1></child1>
+    <child2></child2>
+    <br>
+
   </div>
 </template>
 
@@ -62,35 +74,80 @@
 
 import Vue from 'vue'
 
-const componetA = Vue.component('alert-box', {
+const componentA = Vue.component('alert-box', {
   name: 'alert-box',
   template: `
           <div id="alert-box"   style="background-color: gold">
           <strong>Error: </strong>
           <slot></slot>
+          <slot name="alert-box">default text</slot>
           </div>
         `
 })
-// const componetB = Vue.component('my-component', {
-//   props: {
-//     foo: String,
-//     default: 'aa'
-//   },
-//   template: `
-//     <input
-//       type="text"
-//       :value="foo"
-//       @input="$emit('update:foo', $event.target.value)"/>
-//   `
-// })
+const componentB = Vue.component('todo-list', {
+  name: 'todo-list',
+  data () {
+    return {
+      items: ['Feed a cat', 'Buy milk', 'Jack love Rose']
+    }
+  },
+  template: `
+    <ul>
+    <li v-for="(item, index) in items">
+      {{ index }}-
+      <slot name="todo-list" :item="item"></slot>
+    </li>
+    </ul>
+  `
+})
+
+const bus = new Vue() /* bus */
+const child1 = Vue.component('child1', {
+  name: 'child1',
+  template: `
+    <div id="child1">
+    child1:
+    <button @click="handleClick">发送信息</button>
+    </div>
+  `,
+  methods: {
+    handleClick: function () {
+      bus.$emit('sendmsg', 'msg child1 send to child2')
+    }
+  }
+})
+const child2 = Vue.component('child2', {
+  name: 'child2',
+  template: `
+    <div id="child2">
+    child2:
+    <transition name="fade">
+      <p v-if="msg != ''">{{ msg }}</p>
+    </transition>
+    </div>
+  `,
+  data () {
+    return {
+      msg: ''
+    }
+  },
+  mounted () {
+    bus.$on('sendmsg', (data) => {
+      console.log(data)
+      this.msg = data
+    })
+  }
+})
+
 export default {
   name: 'App',
-  components: [
+  components:
     {
-      'alert-box': componetA
-      // componetB
-    }
-  ],
+      'alert-box': componentA,
+      'todo-list': componentB,
+      'child1': child1,
+      'child2': child2
+    },
   data () {
     return {
       msg: 'input',
