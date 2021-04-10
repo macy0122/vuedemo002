@@ -3,6 +3,7 @@
     <a href="/">跳转HelloWorld</a>
     <br>
     <h1>{{ msg }}</h1>
+    <h3>{{ msgmixin }}</h3>
     <button @click="add">Add</button>
     <button @click="remove">Remove</button>
     <transition-group name="list" tag="p">
@@ -72,8 +73,9 @@
     <!--    bus总线通信    -->
     <child1></child1>
     <child2></child2>
-    <br>
-
+    <!--  渲染函数   -->
+    <anchored-heading :level="1">anchored-heading!</anchored-heading>
+    <anchored-heading :level="3">anchored-heading!</anchored-heading>
   </div>
 </template>
 
@@ -128,7 +130,7 @@ const child2 = Vue.component('child2', {
     <div id="child2">
     child2:
     <transition name="fade" :duration="{ enter: 500, leave: 800 }" mode="out-in">
-      <p v-if="msg != ''">{{ msg }}</p>
+      <p v-if="msg !== ''">{{ msg }}</p>
     </transition>
     </div>
   `,
@@ -144,6 +146,38 @@ const child2 = Vue.component('child2', {
     })
   }
 })
+// 渲染函数
+const componentC = Vue.component('anchored-heading', {
+  name: 'anchored-heading',
+  render (createElement, context) {
+    return createElement(
+      'h' + this.level,
+      {},
+      [
+        this.$slots.default,
+        createElement('i', 'a text')
+      ]
+    )
+  },
+  props: {
+    level: {
+      type: Number,
+      required: true
+    }
+  }
+})
+// 混入对象
+const miXin = {
+  created () {
+    console.log('this is a mixin object')
+  },
+  data () {
+    return {
+      msgmixin: 'this is a msgmixin'
+    }
+  }
+}
+
 export default {
   name: 'Test',
   components:
@@ -151,7 +185,8 @@ export default {
       'alert-box': componentA,
       'todo-list': componentB,
       'child1': child1,
-      'child2': child2
+      'child2': child2,
+      'anchored-heading': componentC
     },
   props: {
     msg: {
@@ -182,8 +217,10 @@ export default {
     remove () {
       this.items.splice(this.randomIndex(), 1)
     }
-  }
+  },
+  mixins: [miXin]
 }
+
 </script>
 
 <style scoped>

@@ -2,10 +2,14 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <a href="/test">跳转test</a>
+    <br>
+<!--    <Test msg="hello"></Test>-->
   </div>
 </template>
 
 <script>
+
+// import Test from './Test'
 
 export default {
   name: 'HelloWorld',
@@ -14,6 +18,10 @@ export default {
       msg: 'Welcome to Your Vue.js App'
     }
   }
+  // ,
+  // components: {
+  //   'Test': Test
+  // }
 }
 </script>
 
