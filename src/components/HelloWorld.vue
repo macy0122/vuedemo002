@@ -3,13 +3,13 @@
     <h1>{{ msg }}</h1>
     <a href="/test">跳转test</a>
     <br>
-<!--    <Test msg="hello"></Test>-->
+    <Test1/>
   </div>
 </template>
 
 <script>
 
-// import Test from './Test'
+import Test1 from './Test1'
 
 export default {
   name: 'HelloWorld',
@@ -17,11 +17,18 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  components: {
+    'Test1': Test1
+  },
+  // provide/inject 提供/注入
+  provide: {
+    todo: 'todo something',
+    user: {
+      name: 'Jack',
+      age: 20
+    }
   }
-  // ,
-  // components: {
-  //   'Test': Test
-  // }
 }
 </script>
 
