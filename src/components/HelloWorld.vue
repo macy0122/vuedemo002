@@ -10,6 +10,7 @@
 <script>
 
 import Test1 from './Test1'
+// import {reactive, ref} from 'vue'
 
 export default {
   name: 'HelloWorld',
@@ -21,6 +22,17 @@ export default {
   components: {
     'Test1': Test1
   },
+  // setup () {
+  //   const todo = ref('todo something ref')
+  //   const user = reactive({
+  //     name: 'Jack reactive',
+  //     age: 20
+  //   })
+  //
+  //   this.provide('todo', todo)
+  //   this.provide('user', user)
+  // }
+
   // provide/inject 提供/注入
   provide: {
     todo: 'todo something',
